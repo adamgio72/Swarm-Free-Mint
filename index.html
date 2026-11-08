@@ -89,15 +89,15 @@
   <header>
     <h1>Swarm Free Mint</h1>
     <p>Dashboard publik hasil vetting swarm free-mint BSC — data nyata dari log sweep, diperbarui tiap 3 jam.</p>
-    <p class="meta">Terakhir diperbarui: <strong>8 Nov 2026, 09:35 WIB</strong> (sweep 12, 09:00–09:35 WIB) &nbsp;·&nbsp; Sweep berikutnya: <strong>12:00 WIB</strong> &nbsp;·&nbsp; Jadwal sweep: 00, 03, 06, 09, 12, 15, 18, 21 WIB</p>
+    <!-- UPDATE:meta -->    <p class="meta">Terakhir diperbarui: <strong>8 Nov 2026, 09:35 WIB</strong> (sweep 12, 09:00–09:35 WIB) &nbsp;·&nbsp; Sweep berikutnya: <strong>12:00 WIB</strong> &nbsp;·&nbsp; Jadwal sweep: 00, 03, 06, 09, 12, 15, 18, 21 WIB</p><!-- /UPDATE:meta -->
   </header>
 
-  <div class="banner amber">
+  <!-- UPDATE:banner -->  <div class="banner amber">
     <strong>⚠ Agent ID belum diklaim</strong>
     Semua 14 kandidat baru di sweep 12 butuh Agent ID. Pengecualian yang tidak butuh Agent ID: Celiuz Cell &amp; BOT-UNIT.
-  </div>
+  </div><!-- /UPDATE:banner -->
 
-  <div class="stats">
+  <!-- UPDATE:stats -->  <div class="stats">
     <div class="stat green">
       <div class="num">14</div>
       <div class="lbl">Baru lolos — sweep 12 (09:00 WIB)</div>
@@ -114,9 +114,9 @@
       <div class="num">8</div>
       <div class="lbl">Gugur — sweep 12</div>
     </div>
-  </div>
+  </div><!-- /UPDATE:stats -->
 
-  <div class="card">
+  <!-- UPDATE:chart -->  <div class="card">
     <h2>Total lolos aktif — 7 Nov 21:00 → 8 Nov 09:00</h2>
     <p class="sub">55 kandidat baru lolos dalam 9 jam (22 + 8 + 11 + 14). Angka di atas bar = total lolos aktif, angka hijau = baru lolos di sweep itu.</p>
     <div class="chart">
@@ -151,10 +151,10 @@
         <div class="bar-lbl">8 Nov<br>09:00</div>
       </div>
     </div>
-    <p class="note">Catatan rekonsiliasi: Analis menghitung 52 − 4 keluar + 14 baru = ~62. Koordinator hanya mengonfirmasi 2 keluar (Pumpkinfarm, NULLRAID), jadi 64 bila hanya keduanya. Komposisi baseline pasti ditugaskan ke sweep 13.</p>
-  </div>
+    <p class="note">Catatan rekonsiliasi: Analis: 52 - 4 keluar + 14 baru = ~62. Koordinator hanya mengonfirmasi 2 keluar (Pumpkinfarm, NULLRAID), jadi 64 bila hanya keduanya. Rekonsiliasi komposisi baseline ditugaskan ke sweep 13.</p>
+  </div><!-- /UPDATE:chart -->
 
-  <div class="card">
+  <!-- UPDATE:table -->  <div class="card">
     <h2>14 kandidat baru — sweep 12</h2>
     <p class="sub">Semua BSC, semua khusus pemegang Agent ID, gratis + gas saja. "Free tersisa" = sisa kuota free saat sweep 12; angka berubah seiring mint berlangsung.</p>
     <div class="table-wrap">
@@ -163,37 +163,37 @@
         <tr><th>Nama</th><th>Kontrak</th><th>Free tersisa</th><th>Per wallet</th><th>Catatan</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>Deltavane</strong> <span class="tag urgent">Paling urgen</span></td><td><code class="contract">0xfcfd…eebc</code></td><td>372 / 1.607</td><td>1/wallet</td><td>Runway ~11 jam</td></tr>
-        <tr><td><strong>Dronegent</strong></td><td><code class="contract">0xf6ab…373b</code></td><td>222 / 5.555</td><td>2/wallet</td><td>Free tersisa sedikit</td></tr>
+        <tr><td><strong>Deltavane</strong> <span class="tag urgent">Paling urgen</span></td><td><code class="contract">0xfcfd…eebc</code></td><td>372 / 1.607</td><td>1/wallet</td><td>Paling urgen — runway ~11 jam</td></tr>
         <tr><td><strong>Mechfarm A</strong></td><td><code class="contract">0x1fab…0367</code></td><td>1.887 / 4.000</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
         <tr><td><strong>Mechfarm B</strong></td><td><code class="contract">0xde53…2bc9</code></td><td>3.293 / 5.555</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
         <tr><td><strong>Lambdwyn</strong></td><td><code class="contract">0xca7a…aa6b</code></td><td>1.075 / 1.624</td><td>1/wallet</td><td>Owner withdraw() aktif</td></tr>
         <tr><td><strong>Cabinette</strong></td><td><code class="contract">0xa854…858e</code></td><td>4.289 / 7.000</td><td>3/wallet</td><td>—</td></tr>
         <tr><td><strong>Navigara</strong></td><td><code class="contract">0x551f…9dce</code></td><td>636 / 1.470</td><td>1/wallet</td><td>—</td></tr>
         <tr><td><strong>Thetavox</strong></td><td><code class="contract">0x37d3…d859</code></td><td>581 / 1.632</td><td>1/wallet</td><td>—</td></tr>
+        <tr><td><strong>Dronegent</strong></td><td><code class="contract">0xf6ab…373b</code></td><td>222 / 5.555</td><td>2/wallet</td><td>Free tersisa sedikit</td></tr>
         <tr><td><strong>Hackagent</strong></td><td><code class="contract">0xc13f…d07b</code></td><td>1.217 / 5.555</td><td>2/wallet</td><td>—</td></tr>
-        <tr><td><strong>GOAT</strong></td><td><code class="contract">0xe7a5…c7c0</code></td><td>~1.494 / 5.000</td><td>s.d. 100/Agent ID</td><td>Free-tier tersisa dari 5.000</td></tr>
-        <tr><td><strong>MEOWBARK</strong> <span class="tag token">Token, bukan NFT</span></td><td><code class="contract">0x7a38…faab</code></td><td>1.848 klaim / 2.500 Fase A</td><td>1 jt token/klaim</td><td>CLAIM_FEE 0,00008 BNB belum terverifikasi</td></tr>
-        <tr><td><strong>WOJAGENT</strong> <span class="tag token">Token/share, bukan NFT</span></td><td><code class="contract">0x62EC…57B7</code></td><td>≤805 / 1.000 share</td><td>1 share/Agent ID</td><td>Trading belum buka</td></tr>
+        <tr><td><strong>GOAT</strong></td><td><code class="contract">0xe7a5…c7c0</code></td><td>~1.494 / 5.000</td><td>s.d. 100/Agent ID</td><td>Free-tier tersisa ~1.494 dari 5.000</td></tr>
+        <tr><td><strong>MEOWBARK</strong> <span class="tag token">Token, bukan NFT</span></td><td><code class="contract">0x7a38…faab</code></td><td>1.848 klaim / 2.500 Fase A</td><td>1 jt token/klaim</td><td>TOKEN, bukan NFT. Fase A. CLAIM_FEE=0,00008 BNB belum terverifikasi.</td></tr>
+        <tr><td><strong>WOJAGENT</strong> <span class="tag token">Token/share, bukan NFT</span></td><td><code class="contract">0x62EC…57B7</code></td><td>≤805 / 1.000 share</td><td>1 share/Agent ID</td><td>TOKEN/share, bukan NFT. Trading belum buka.</td></tr>
         <tr><td><strong>SYMBOL</strong></td><td><code class="contract">0x993C…cF71</code></td><td>5.780 / 10.000</td><td>Jatah tidak terbaca</td><td>—</td></tr>
         <tr><td><strong>Agent Miner</strong></td><td><code class="contract">0xCe67…9446</code></td><td>5.895 / 9.999</td><td>Jatah tidak terbaca</td><td>—</td></tr>
       </tbody>
     </table>
     </div>
     <p class="note">Alamat kontrak lengkap ada di <a href="data.json">data.json</a>. Semua alamat di atas adalah data on-chain publik.</p>
-  </div>
+  </div><!-- /UPDATE:table -->
 
-  <div class="banner red">
+  <!-- UPDATE:owner -->  <div class="banner red">
     <strong>⚠ Peringatan owner control</strong>
     Semua 14 kontrak baru punya fungsi owner withdraw() / setMintOpen() / setRoyalty() yang masih aktif. Lolos vetting bukan berarti aman — itu hanya berarti free lane-nya terbukti ada saat dicek.
-  </div>
+  </div><!-- /UPDATE:owner -->
 
-  <div class="card">
+  <!-- UPDATE:turun -->  <div class="card">
     <h2>Turun status &amp; gugur — sweep 12</h2>
     <p class="sub">Kandidat yang keluar dari daftar lolos atau terkonfirmasi gugur di sweep ini.</p>
     <ul class="clean">
       <li><span class="name">Pumpkinfarm</span> — <span class="detail">TURUN STATUS: SOLD OUT 999/999</span></li>
-      <li><span class="name">NULLRAID</span> — <span class="detail">TURUN STATUS: fase 2 buka tapi BERBAYAR 0,001 BNB, keluar dari daftar lolos</span></li>
+      <li><span class="name">NULLRAID</span> — <span class="detail">TURUN STATUS: Fase 2 buka tapi BERBAYAR 0,001 BNB — keluar dari daftar lolos</span></li>
       <li><span class="name">DinoAgent</span> — <span class="detail">gugur: 777/777</span></li>
       <li><span class="name">OinkHash</span> — <span class="detail">gugur: mintOpen = 0</span></li>
       <li><span class="name">HokiCat</span> — <span class="detail">gugur: free 222/222 habis</span></li>
@@ -203,19 +203,19 @@
       <li><span class="name">Ghoulfarm</span> — <span class="detail">gugur: 1.000/1.000</span></li>
       <li><span class="name">AgentForge</span> — <span class="detail">gugur: SOLD OUT 3.333/3.333</span></li>
     </ul>
-  </div>
+  </div><!-- /UPDATE:turun -->
 
-  <div class="card">
+  <!-- UPDATE:deadlines -->  <div class="card">
     <h2>Deadline hari ini</h2>
     <p class="sub">Estimasi tutup dari sumber pihak ketiga pernah meleset — pakai rentang, dan cek ulang on-chain sebelum bertindak.</p>
     <ul class="clean">
       <li><span class="name">Ptah PoA</span> — <span class="detail">tutup 8 Nov 2026, 11:44 WIB (soulbound — pengingat terakhir)</span></li>
       <li><span class="name">REWARD</span> — <span class="detail">tutup ~16:00–17:30 WIB, 8 Nov 2026 (sisa ~38)</span></li>
-      <li><span class="name">helm.ai</span> — <span class="detail">tutup ~23:30 WIB 8 Nov – 02:00 WIB 9 Nov 2026 (sisa ~103)</span></li>
+      <li><span class="name">helm.ai</span> — <span class="detail">tutup ~23:30 WIB 8 Nov – 02:00 WIB 9 Nov 2026 (sisa ~103) — estimasi tutup berbeda antar Watcher, pakai rentang</span></li>
       <li><span class="name">ORBITA</span> — <span class="detail">tutup ~06:00 WIB, 9 Nov 2026 (sisa ~169)</span></li>
       <li><span class="name">AgentVOLT</span> — <span class="detail">MINT_END 9 Nov 2026, 21:35 WIB (hanya dari situs, bukan on-chain)</span></li>
     </ul>
-  </div>
+  </div><!-- /UPDATE:deadlines -->
 
   <div class="card">
     <h2>Bagaimana vetting bekerja</h2>
@@ -244,7 +244,7 @@
   </div>
 
   <footer class="card">
-    <p class="big">Data nyata sweep 9–12 • bukan saran investasi • tidak ada pasar secondary terverifikasi • swarm tidak mint.</p>
+    <!-- UPDATE:footer -->    <p class="big">Data nyata sweep 9–12 • bukan saran investasi • tidak ada pasar secondary terverifikasi • swarm tidak mint.</p><!-- /UPDATE:footer -->
     <p>Semua angka di halaman ini berasal dari log sweep swarm free-mint (Sourcify + simulasi eth_call read-only di BSC). Tidak ada harga, profit, atau win rate — swarm ini memvettng mint gratis, bukan trading. Pasar secondary untuk semua kandidat: <strong>0 terverifikasi</strong>. Lolos vetting bukan jaminan bisa dijual.</p>
     <p>Swarm tidak pernah melakukan transaksi. Eksekutor terkunci: <strong>PREVIEW ONLY • NO MINT</strong>. Data mesin-terbaca: <a href="data.json">data.json</a>.</p>
   </footer>
