@@ -74,6 +74,51 @@
   footer p { margin-bottom: 8px; }
   footer .big { color: #0f172a; font-weight: 700; }
 
+  /* --- Interaktif: countdown, timeline, filter, detail (di luar UPDATE) --- */
+  .countdown-line { margin-top: 10px; font-size: 14px; color: #475569; }
+  .countdown-line strong { color: #0f172a; }
+
+  .stat .num { font-variant-numeric: tabular-nums; }
+  .bar-val { font-variant-numeric: tabular-nums; }
+
+  .timeline-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: -4px 0 16px; }
+  .timeline-controls button, .fchip { font: inherit; cursor: pointer; }
+  .btn { background: #0f172a; color: #fff; border: 1px solid #0f172a; border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 700; }
+  .btn:hover { background: #1e293b; }
+  .btn:disabled { background: #94a3b8; border-color: #94a3b8; cursor: default; }
+  .btn.ghost { background: #fff; color: #0f172a; border-color: #cbd5e1; }
+  .btn.ghost:hover:not(:disabled) { background: #f1f5f9; }
+  .btn.ghost:disabled { color: #94a3b8; background: #f8fafc; }
+  #timeline-status { font-size: 14px; color: #475569; }
+  #timeline-status strong { color: #0f172a; }
+  .chart.playing .bar-col:not(.playing) { opacity: 0.45; }
+  .bar-col.playing .bar { background: #1d4ed8; }
+  .bar-col.playing .bar-val { color: #1d4ed8; }
+  .bar-col.playing .bar-lbl { color: #1d4ed8; font-weight: 700; }
+
+  .table-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .fchips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fchip { background: #fff; border: 1px solid #cbd5e1; border-radius: 999px; padding: 6px 14px; font-size: 14px; }
+  .fchip:hover { background: #f1f5f9; }
+  .fchip[aria-pressed="true"] { background: #0f172a; color: #fff; border-color: #0f172a; font-weight: 700; }
+  .search-wrap { display: flex; align-items: center; gap: 6px; font-size: 14px; color: #475569; flex: 1 1 220px; min-width: 0; }
+  .search-wrap input { font: inherit; flex: 1; min-width: 0; padding: 7px 12px; border: 1px solid #cbd5e1; border-radius: 999px; background: #fff; color: #0f172a; }
+  .search-wrap input:focus { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+  #row-count { font-size: 13px; color: #64748b; }
+
+  tbody tr[data-expandable] { cursor: pointer; }
+  tbody tr[data-expandable]:hover { background: #f8fafc; }
+  tbody tr[data-expandable]:focus-visible { outline: 2px solid #1d4ed8; outline-offset: -2px; }
+  tbody tr[data-expandable].open { background: #eff6ff; }
+  tbody tr[data-expandable] td:first-child::after { content: " ▸"; color: #94a3b8; font-size: 12px; }
+  tbody tr[data-expandable].open td:first-child::after { content: " ▾"; color: #1d4ed8; }
+  tr.detail-row td { background: #f8fafc; padding: 14px 12px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 24px; font-size: 14px; }
+  .detail-grid dt { color: #64748b; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .detail-grid dd { margin-bottom: 6px; overflow-wrap: anywhere; }
+  .detail-grid dd code { font-size: 13px; }
+  .detail-note { grid-column: 1 / -1; }
+
   @media (max-width: 720px) {
     header h1 { font-size: 27px; }
     .stats { grid-template-columns: repeat(2, 1fr); }
@@ -91,6 +136,8 @@
     <p>Dashboard publik hasil vetting swarm free-mint BSC — data nyata dari log sweep, diperbarui tiap 3 jam.</p>
     <!-- UPDATE:meta -->    <p class="meta">Terakhir diperbarui: <strong>8 Nov 2026, 09:35 WIB</strong> (sweep 12, 09:00–09:35 WIB) &nbsp;·&nbsp; Sweep berikutnya: <strong>12:00 WIB</strong> &nbsp;·&nbsp; Jadwal sweep: 00, 03, 06, 09, 12, 15, 18, 21 WIB</p><!-- /UPDATE:meta -->
   </header>
+
+  <p class="countdown-line" id="next-countdown">Sweep berikut: <strong>12:00 WIB</strong> — hitung mundur dimuat…</p>
 
   <!-- UPDATE:banner -->  <div class="banner amber">
     <strong>⚠ Agent ID belum diklaim</strong>
@@ -154,6 +201,23 @@
     <p class="note">Catatan rekonsiliasi: Analis: 52 - 4 keluar + 14 baru = ~62. Koordinator hanya mengonfirmasi 2 keluar (Pumpkinfarm, NULLRAID), jadi 64 bila hanya keduanya. Rekonsiliasi komposisi baseline ditugaskan ke sweep 13.</p>
   </div><!-- /UPDATE:chart -->
 
+  <div class="timeline-controls">
+    <button type="button" class="btn" id="play-timeline">▶ Putar timeline</button>
+    <button type="button" class="btn ghost" id="reset-timeline" disabled>↺ Ulangi</button>
+    <span id="timeline-status" role="status">Sweep 12 · 8 Nov 09:00 — total ~62 (+14 baru)</span>
+  </div>
+
+  <div class="table-tools" id="table-tools">
+    <div class="fchips" role="group" aria-label="Filter kandidat">
+      <button type="button" class="fchip" data-filter="all" aria-pressed="true">Semua</button>
+      <button type="button" class="fchip" data-filter="noagent" aria-pressed="false">Tanpa Agent ID</button>
+      <button type="button" class="fchip" data-filter="agent" aria-pressed="false">Khusus Agent ID</button>
+      <button type="button" class="fchip" data-filter="token" aria-pressed="false">Token</button>
+    </div>
+    <label class="search-wrap">Cari <input type="search" id="cand-search" placeholder="Nama kandidat…" aria-label="Cari kandidat berdasarkan nama"></label>
+    <span id="row-count" role="status">Menampilkan 14 dari 14 kandidat</span>
+  </div>
+
   <!-- UPDATE:table -->  <div class="card">
     <h2>14 kandidat baru — sweep 12</h2>
     <p class="sub">Semua BSC, semua khusus pemegang Agent ID, gratis + gas saja. "Free tersisa" = sisa kuota free saat sweep 12; angka berubah seiring mint berlangsung.</p>
@@ -163,20 +227,20 @@
         <tr><th>Nama</th><th>Kontrak</th><th>Free tersisa</th><th>Per wallet</th><th>Catatan</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>Deltavane</strong> <span class="tag urgent">Paling urgen</span></td><td><code class="contract">0xfcfd…eebc</code></td><td>372 / 1.607</td><td>1/wallet</td><td>Paling urgen — runway ~11 jam</td></tr>
-        <tr><td><strong>Mechfarm A</strong></td><td><code class="contract">0x1fab…0367</code></td><td>1.887 / 4.000</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
-        <tr><td><strong>Mechfarm B</strong></td><td><code class="contract">0xde53…2bc9</code></td><td>3.293 / 5.555</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
-        <tr><td><strong>Lambdwyn</strong></td><td><code class="contract">0xca7a…aa6b</code></td><td>1.075 / 1.624</td><td>1/wallet</td><td>Owner withdraw() aktif</td></tr>
-        <tr><td><strong>Cabinette</strong></td><td><code class="contract">0xa854…858e</code></td><td>4.289 / 7.000</td><td>3/wallet</td><td>—</td></tr>
-        <tr><td><strong>Navigara</strong></td><td><code class="contract">0x551f…9dce</code></td><td>636 / 1.470</td><td>1/wallet</td><td>—</td></tr>
-        <tr><td><strong>Thetavox</strong></td><td><code class="contract">0x37d3…d859</code></td><td>581 / 1.632</td><td>1/wallet</td><td>—</td></tr>
-        <tr><td><strong>Dronegent</strong></td><td><code class="contract">0xf6ab…373b</code></td><td>222 / 5.555</td><td>2/wallet</td><td>Free tersisa sedikit</td></tr>
-        <tr><td><strong>Hackagent</strong></td><td><code class="contract">0xc13f…d07b</code></td><td>1.217 / 5.555</td><td>2/wallet</td><td>—</td></tr>
-        <tr><td><strong>GOAT</strong></td><td><code class="contract">0xe7a5…c7c0</code></td><td>~1.494 / 5.000</td><td>s.d. 100/Agent ID</td><td>Free-tier tersisa ~1.494 dari 5.000</td></tr>
-        <tr><td><strong>MEOWBARK</strong> <span class="tag token">Token, bukan NFT</span></td><td><code class="contract">0x7a38…faab</code></td><td>1.848 klaim / 2.500 Fase A</td><td>1 jt token/klaim</td><td>TOKEN, bukan NFT. Fase A. CLAIM_FEE=0,00008 BNB belum terverifikasi.</td></tr>
-        <tr><td><strong>WOJAGENT</strong> <span class="tag token">Token/share, bukan NFT</span></td><td><code class="contract">0x62EC…57B7</code></td><td>≤805 / 1.000 share</td><td>1 share/Agent ID</td><td>TOKEN/share, bukan NFT. Trading belum buka.</td></tr>
-        <tr><td><strong>SYMBOL</strong></td><td><code class="contract">0x993C…cF71</code></td><td>5.780 / 10.000</td><td>Jatah tidak terbaca</td><td>—</td></tr>
-        <tr><td><strong>Agent Miner</strong></td><td><code class="contract">0xCe67…9446</code></td><td>5.895 / 9.999</td><td>Jatah tidak terbaca</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Deltavane</strong> <span class="tag urgent">Paling urgen</span></td><td><code class="contract">0xfcfd…eebc</code></td><td>372 / 1.607</td><td>1/wallet</td><td>Paling urgen — runway ~11 jam</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Mechfarm A</strong></td><td><code class="contract">0x1fab…0367</code></td><td>1.887 / 4.000</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Mechfarm B</strong></td><td><code class="contract">0xde53…2bc9</code></td><td>3.293 / 5.555</td><td>2/wallet</td><td>Owner withdraw() aktif</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Lambdwyn</strong></td><td><code class="contract">0xca7a…aa6b</code></td><td>1.075 / 1.624</td><td>1/wallet</td><td>Owner withdraw() aktif</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Cabinette</strong></td><td><code class="contract">0xa854…858e</code></td><td>4.289 / 7.000</td><td>3/wallet</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Navigara</strong></td><td><code class="contract">0x551f…9dce</code></td><td>636 / 1.470</td><td>1/wallet</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Thetavox</strong></td><td><code class="contract">0x37d3…d859</code></td><td>581 / 1.632</td><td>1/wallet</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Dronegent</strong></td><td><code class="contract">0xf6ab…373b</code></td><td>222 / 5.555</td><td>2/wallet</td><td>Free tersisa sedikit</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Hackagent</strong></td><td><code class="contract">0xc13f…d07b</code></td><td>1.217 / 5.555</td><td>2/wallet</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>GOAT</strong></td><td><code class="contract">0xe7a5…c7c0</code></td><td>~1.494 / 5.000</td><td>s.d. 100/Agent ID</td><td>Free-tier tersisa ~1.494 dari 5.000</td></tr>
+        <tr data-agent="khusus" data-token="1"><td><strong>MEOWBARK</strong> <span class="tag token">Token, bukan NFT</span></td><td><code class="contract">0x7a38…faab</code></td><td>1.848 klaim / 2.500 Fase A</td><td>1 jt token/klaim</td><td>TOKEN, bukan NFT. Fase A. CLAIM_FEE=0,00008 BNB belum terverifikasi.</td></tr>
+        <tr data-agent="khusus" data-token="1"><td><strong>WOJAGENT</strong> <span class="tag token">Token/share, bukan NFT</span></td><td><code class="contract">0x62EC…57B7</code></td><td>≤805 / 1.000 share</td><td>1 share/Agent ID</td><td>TOKEN/share, bukan NFT. Trading belum buka.</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>SYMBOL</strong></td><td><code class="contract">0x993C…cF71</code></td><td>5.780 / 10.000</td><td>Jatah tidak terbaca</td><td>—</td></tr>
+        <tr data-agent="khusus" data-token="0"><td><strong>Agent Miner</strong></td><td><code class="contract">0xCe67…9446</code></td><td>5.895 / 9.999</td><td>Jatah tidak terbaca</td><td>—</td></tr>
       </tbody>
     </table>
     </div>
@@ -250,5 +314,345 @@
   </footer>
 
 </div>
+<script>
+(function () {
+  'use strict';
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- 1. Count-up angka headline ---------- */
+  var countUpCancel = null;
+  function countUp() {
+    var nums = Array.prototype.slice.call(document.querySelectorAll('.stat .num'));
+    if (reducedMotion || !nums.length) return;
+    var token = { cancelled: false };
+    countUpCancel = function () { token.cancelled = true; };
+    var duration = 900, start = null;
+    var targets = nums.map(function (el) {
+      var txt = el.textContent.trim();
+      var m = txt.match(/^([^0-9]*)([0-9]+)([^0-9]*)$/);
+      return { el: el, prefix: m ? m[1] : '', target: m ? parseInt(m[2], 10) : 0, suffix: m ? m[3] : '', final: txt };
+    });
+    function frame(ts) {
+      if (token.cancelled) return;
+      if (start === null) start = ts;
+      var p = Math.min(1, (ts - start) / duration);
+      var eased = 1 - Math.pow(1 - p, 3);
+      targets.forEach(function (t) {
+        t.el.textContent = p >= 1 ? t.final : t.prefix + Math.round(t.target * eased) + t.suffix;
+      });
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* Stat "Total lolos aktif" — dicari lewat label, bukan posisi. */
+  var totalStat = null, totalOriginal = '';
+  function findTotalStat() {
+    var stats = document.querySelectorAll('.stat');
+    for (var i = 0; i < stats.length; i++) {
+      var lbl = stats[i].querySelector('.lbl');
+      var num = stats[i].querySelector('.num');
+      if (lbl && num && lbl.textContent.indexOf('Total lolos aktif') !== -1) {
+        totalStat = num;
+        totalOriginal = num.textContent.trim();
+        return;
+      }
+    }
+  }
+
+  /* ---------- 2. Putar timeline ---------- */
+  var chart = document.querySelector('.chart');
+  var playBtn = document.getElementById('play-timeline');
+  var resetBtn = document.getElementById('reset-timeline');
+  var statusEl = document.getElementById('timeline-status');
+  var steps = [], timer = null, stepIdx = -1, playing = false, initialStatus = '';
+
+  function readSteps() {
+    if (!chart) return [];
+    return Array.prototype.slice.call(chart.querySelectorAll('.bar-col')).map(function (col) {
+      var val = col.querySelector('.bar-val');
+      var nw = col.querySelector('.bar-new');
+      var lbl = col.querySelector('.bar-lbl');
+      var label = '';
+      if (lbl) {
+        label = Array.prototype.slice.call(lbl.childNodes).map(function (n) { return n.textContent; }).join(' ').replace(/\s+/g, ' ').trim();
+      }
+      return {
+        col: col,
+        total: val ? val.textContent.trim() : '',
+        baru: nw ? nw.textContent.trim() : '',
+        label: label
+      };
+    });
+  }
+  function showStep(i) {
+    steps.forEach(function (s) { s.col.classList.remove('playing'); });
+    var s = steps[i];
+    if (!s) return;
+    s.col.classList.add('playing');
+    if (totalStat) totalStat.textContent = s.total;
+    if (statusEl) statusEl.textContent = s.label + ' — total ' + s.total + ' (' + s.baru + ' baru)';
+  }
+  function stopTimer() { if (timer !== null) { clearInterval(timer); timer = null; } }
+  function finishPlayback() {
+    stopTimer();
+    playing = false;
+    if (playBtn) playBtn.textContent = '▶ Putar timeline';
+    if (resetBtn) resetBtn.disabled = false;
+  }
+  function jumpToFinal() {
+    if (countUpCancel) countUpCancel();
+    if (!steps.length) return;
+    if (chart) chart.classList.add('playing');
+    showStep(steps.length - 1);
+    finishPlayback();
+  }
+  function startPlayback() {
+    if (!steps.length) return;
+    if (reducedMotion) { jumpToFinal(); return; }
+    if (countUpCancel) countUpCancel();
+    if (totalStat) totalStat.textContent = totalOriginal;
+    stepIdx = -1;
+    if (chart) chart.classList.add('playing');
+    playing = true;
+    if (playBtn) playBtn.textContent = '⏸ Jeda';
+    if (resetBtn) resetBtn.disabled = false;
+    advanceStep();
+    timer = setInterval(advanceStep, 1200);
+  }
+  function advanceStep() {
+    stepIdx += 1;
+    if (stepIdx >= steps.length) { finishPlayback(); return; }
+    showStep(stepIdx);
+  }
+  function pausePlayback() {
+    stopTimer();
+    playing = false;
+    if (playBtn) playBtn.textContent = '▶ Lanjut';
+  }
+  function resetPlayback() {
+    stopTimer();
+    playing = false;
+    stepIdx = -1;
+    steps.forEach(function (s) { s.col.classList.remove('playing'); });
+    if (chart) chart.classList.remove('playing');
+    if (totalStat) totalStat.textContent = totalOriginal;
+    if (statusEl) statusEl.textContent = initialStatus;
+    if (playBtn) playBtn.textContent = '▶ Putar timeline';
+    if (resetBtn) resetBtn.disabled = true;
+  }
+  if (playBtn && chart) {
+    steps = readSteps();
+    if (statusEl) initialStatus = statusEl.textContent;
+    playBtn.addEventListener('click', function () {
+      if (playing) { pausePlayback(); return; }
+      if (stepIdx >= steps.length - 1 && stepIdx !== -1) { resetPlayback(); }
+      startPlayback();
+    });
+  }
+  if (resetBtn) resetBtn.addEventListener('click', resetPlayback);
+
+  /* ---------- 3 & 4. Filter + cari + baris detail ---------- */
+  var table = document.querySelector('table');
+  var tbody = table ? table.querySelector('tbody') : null;
+  var searchInput = document.getElementById('cand-search');
+  var rowCountEl = document.getElementById('row-count');
+  var candMap = {};
+  function candidateFor(name) { return candMap[name] || null; }
+  var detailRow = null, openRow = null;
+
+  function dataRows() {
+    if (!tbody) return [];
+    return Array.prototype.slice.call(tbody.querySelectorAll('tr:not(.detail-row):not(.empty-row)'));
+  }
+  function uniformAgent() {
+    var card = table ? table.closest('.card') : null;
+    var sub = card ? card.querySelector('.sub') : null;
+    var txt = sub ? sub.textContent : '';
+    if (/semua khusus/i.test(txt)) return 'agent';
+    if (/semua TANPA/i.test(txt)) return 'noagent';
+    return 'unknown';
+  }
+  function rowAgent(row) {
+    /* Normalisasi ke 'agent' / 'noagent' / 'unknown'. Atribut data-agent
+       di baris memakai kata Indonesia ('khusus'/'tanpa'); data.json
+       memakai boolean agent_id_required. */
+    var a = row.getAttribute('data-agent');
+    if (a === 'khusus' || a === 'agent') return 'agent';
+    if (a === 'tanpa' || a === 'noagent') return 'noagent';
+    var cand = candidateFor(rowName(row));
+    if (cand && cand.agent_id_required === true) return 'agent';
+    if (cand && cand.agent_id_required === false) return 'noagent';
+    return uniformAgent();
+  }
+  function rowName(row) {
+    var strong = row.querySelector('td strong');
+    return strong ? strong.textContent.trim() : (row.cells[0] ? row.cells[0].textContent.trim() : '');
+  }
+  function rowIsToken(row) {
+    if (row.getAttribute('data-token') === '1') return true;
+    if (row.querySelector('.tag.token')) return true;
+    var note = row.cells[4] ? row.cells[4].textContent : '';
+    return /token/i.test(note);
+  }
+  var activeFilter = 'all';
+  function applyFilters() {
+    if (!tbody) return;
+    closeDetail();
+    var q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+    var rows = dataRows(), visible = 0;
+    rows.forEach(function (row) {
+      var ok = true;
+      if (activeFilter === 'agent' && rowAgent(row) !== 'agent') ok = false;
+      if (activeFilter === 'noagent' && rowAgent(row) !== 'noagent') ok = false;
+      if (activeFilter === 'token' && !rowIsToken(row)) ok = false;
+      if (q && rowName(row).toLowerCase().indexOf(q) === -1) ok = false;
+      row.style.display = ok ? '' : 'none';
+      if (ok) visible += 1;
+    });
+    var empty = tbody.querySelector('tr.empty-row');
+    if (visible === 0) {
+      if (!empty) {
+        empty = document.createElement('tr');
+        empty.className = 'empty-row';
+        var td = document.createElement('td');
+        td.colSpan = 5;
+        td.textContent = 'Tidak ada kandidat yang cocok dengan filter / pencarian ini.';
+        empty.appendChild(td);
+        tbody.appendChild(empty);
+      }
+    } else if (empty) {
+      empty.parentNode.removeChild(empty);
+    }
+    if (rowCountEl) rowCountEl.textContent = 'Menampilkan ' + visible + ' dari ' + rows.length + ' kandidat';
+  }
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.fchip'));
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', 'false'); });
+      chip.setAttribute('aria-pressed', 'true');
+      activeFilter = chip.getAttribute('data-filter') || 'all';
+      applyFilters();
+    });
+  });
+  if (searchInput) searchInput.addEventListener('input', applyFilters);
+
+  function el(tag, text, cls) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text !== undefined && text !== null) n.textContent = text;
+    return n;
+  }
+  function closeDetail() {
+    if (detailRow && detailRow.parentNode) detailRow.parentNode.removeChild(detailRow);
+    if (openRow) { openRow.classList.remove('open'); openRow.setAttribute('aria-expanded', 'false'); }
+    detailRow = null; openRow = null;
+  }
+  function openDetail(row) {
+    closeDetail();
+    var name = rowName(row);
+    var cand = candidateFor(name);
+    var contract = cand && cand.contract ? cand.contract : (row.cells[1] ? row.cells[1].textContent.trim() : '');
+    var free = cand && cand.free_display ? cand.free_display : (row.cells[2] ? row.cells[2].textContent.trim() : '');
+    var per = cand && cand.per_wallet ? cand.per_wallet : (row.cells[3] ? row.cells[3].textContent.trim() : '');
+    var note = cand && cand.note ? cand.note : (row.cells[4] ? row.cells[4].textContent.trim() : '');
+    var agent = rowAgent(row);
+    var syarat = agent === 'agent' ? 'Khusus pemegang Agent ID' : agent === 'noagent' ? 'Tanpa Agent ID' : 'Tidak diketahui dari halaman ini';
+    var dl = el('dl', null, 'detail-grid');
+    var pairs = [
+      ['Kontrak lengkap', contract, true],
+      ['Chain', 'BSC', false],
+      ['Free tersisa', free, false],
+      ['Per wallet', per, false],
+      ['Syarat', syarat, false]
+    ];
+    pairs.forEach(function (p) {
+      dl.appendChild(el('dt', p[0]));
+      var dd = el('dd');
+      if (p[2]) { var code = el('code', p[1]); dd.appendChild(code); } else { dd.textContent = p[1]; }
+      dl.appendChild(dd);
+    });
+    var dtNote = el('dt', 'Catatan');
+    var ddNote = el('dd', note || '—', 'detail-note');
+    dl.appendChild(dtNote); dl.appendChild(ddNote);
+    detailRow = document.createElement('tr');
+    detailRow.className = 'detail-row';
+    var td = document.createElement('td');
+    td.colSpan = row.cells.length || 5;
+    td.appendChild(dl);
+    detailRow.appendChild(td);
+    row.parentNode.insertBefore(detailRow, row.nextSibling);
+    row.classList.add('open');
+    row.setAttribute('aria-expanded', 'true');
+    openRow = row;
+  }
+  function toggleDetail(row) {
+    if (openRow === row) { closeDetail(); return; }
+    openDetail(row);
+  }
+  function initRows() {
+    dataRows().forEach(function (row) {
+      row.setAttribute('data-expandable', '');
+      row.tabIndex = 0;
+      row.setAttribute('aria-expanded', 'false');
+      row.title = 'Klik untuk detail';
+      row.addEventListener('click', function () { toggleDetail(row); });
+      row.addEventListener('keydown', function (ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggleDetail(row); }
+      });
+    });
+  }
+
+  /* data.json: kontrak lengkap + status Agent ID per kandidat (opsional;
+     gagal saat file:// tetap aman karena DOM sudah memuat data dasar). */
+  if (window.fetch) {
+    fetch('data.json').then(function (r) { return r.json(); }).then(function (d) {
+      var list = d.sweep_12_new || [];
+      var key = Object.keys(d).filter(function (k) { return /^sweep_\d+_new$/.test(k); })[0];
+      if (key) list = d[key];
+      list.forEach(function (c) { candMap[c.name] = c; });
+      applyFilters();
+    }).catch(function () { /* abaikan: fallback DOM tetap jalan */ });
+  }
+
+  /* ---------- 5. Hitung mundur sweep berikut (WIB) ---------- */
+  var countdownEl = document.getElementById('next-countdown');
+  var MARKS = [0, 3, 6, 9, 12, 15, 18, 21];
+  function wibNow() {
+    var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+    var h = 0, m = 0;
+    parts.forEach(function (p) { if (p.type === 'hour') h = parseInt(p.value, 10); if (p.type === 'minute') m = parseInt(p.value, 10); });
+    return { h: h % 24, m: m };
+  }
+  function updateCountdown() {
+    if (!countdownEl) return;
+    var now = wibNow();
+    var nowMin = now.h * 60 + now.m;
+    var nextMin = null;
+    for (var i = 0; i < MARKS.length; i++) {
+      if (MARKS[i] * 60 > nowMin) { nextMin = MARKS[i] * 60; break; }
+    }
+    if (nextMin === null) nextMin = 24 * 60 + MARKS[0] * 60;
+    var diff = nextMin - nowMin;
+    var hh = Math.floor(nextMin / 60) % 24;
+    var hhTxt = (hh < 10 ? '0' : '') + hh + ':00';
+    var when = diff >= 60 ? Math.floor(diff / 60) + 'j ' + (diff % 60) + 'm' : diff + ' menit';
+    countdownEl.innerHTML = '';
+    countdownEl.appendChild(document.createTextNode('Sweep berikut: '));
+    var strong = document.createElement('strong');
+    strong.textContent = hhTxt + ' WIB';
+    countdownEl.appendChild(strong);
+    countdownEl.appendChild(document.createTextNode(' (dalam ' + when + ')'));
+  }
+
+  /* ---------- init ---------- */
+  findTotalStat();
+  countUp();
+  initRows();
+  applyFilters();
+  updateCountdown();
+  setInterval(updateCountdown, 30000);
+})();
+</script>
 </body>
 </html>
